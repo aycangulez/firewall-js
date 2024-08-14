@@ -1,0 +1,16 @@
+{
+    "name": "firewall-js",
+    "version": "0.1.0",
+    "description": "",
+    "main": "firewall.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Aycan Gulez",
+    "license": "MIT",
+    "dependencies": {
+        "callsites": "^3.1.0",
+        "fn-arg-validator": "^1.1.2",
+        "lodash": "^4.17.21"
+    }
+}
