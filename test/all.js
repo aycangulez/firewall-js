@@ -52,7 +52,7 @@ describe('firewall-js', function () {
             fwService.prop1;
             should.fail();
         } catch (e) {
-            e.message.should.include('Access denied to prop1');
+            e.message.should.include('Access denied for prop1');
         }
     });
 
@@ -62,7 +62,7 @@ describe('firewall-js', function () {
             fwService.prop3.subProp1;
             should.fail();
         } catch (e) {
-            e.message.should.include('Access denied to prop3');
+            e.message.should.include('Access denied for prop3');
         }
     });
 
@@ -72,7 +72,7 @@ describe('firewall-js', function () {
             fwService.prop2 = 'there';
             should.fail();
         } catch (e) {
-            e.message.should.include('Access denied to prop2');
+            e.message.should.include('Access denied for prop2');
         }
     });
 
@@ -82,7 +82,7 @@ describe('firewall-js', function () {
             delete fwService.prop2;
             should.fail();
         } catch (e) {
-            e.message.should.include('Access denied to deleting property');
+            e.message.should.include('Access denied for deleting property');
         }
     });
 
@@ -92,7 +92,7 @@ describe('firewall-js', function () {
             fwService.increment(1);
             should.fail();
         } catch (e) {
-            e.message.should.include('Access denied to increment');
+            e.message.should.include('Access denied for increment');
         }
     });
 
@@ -103,7 +103,7 @@ describe('firewall-js', function () {
             }
             should.fail();
         } catch (e) {
-            e.message.should.include('Access denied to observe own keys');
+            e.message.should.include('Access denied for observing own keys');
         }
     });
 
@@ -112,7 +112,7 @@ describe('firewall-js', function () {
         try {
             fwFunc();
         } catch (e) {
-            e.message.should.include('Access denied to calling function');
+            e.message.should.include('Access denied for calling function');
         }
     });
 
@@ -122,7 +122,7 @@ describe('firewall-js', function () {
             new fwService();
             should.fail();
         } catch (e) {
-            e.message.should.include('Access denied to creating new object');
+            e.message.should.include('Access denied for creating new object');
         }
     });
 });

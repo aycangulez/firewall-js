@@ -18,7 +18,7 @@ const firewall = (function () {
                 return includes(fullPath)(callerFileName) || includes('node_modules')(callerFileName);
             })(locations)
         ) {
-            const err = `Access denied to ${prop.toString()} from ${callerFileName}:${caller.getLineNumber()}:${caller.getColumnNumber()}`;
+            const err = `Access denied for ${prop.toString()} from ${callerFileName}:${caller.getLineNumber()}:${caller.getColumnNumber()}`;
             throw new Error(err);
         }
     }
@@ -47,7 +47,7 @@ const firewall = (function () {
                 return Reflect.has(...arguments);
             },
             ownKeys: function (target) {
-                throwIfCallerNotAuthorized(locations, 'observe own keys');
+                throwIfCallerNotAuthorized(locations, 'observing own keys');
                 return Reflect.ownKeys(...arguments);
             },
             set: function (target, prop, value) {
