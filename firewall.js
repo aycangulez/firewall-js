@@ -1,11 +1,9 @@
 const is = require('fn-arg-validator');
-const includes = require('lodash/fp/includes');
 const find = require('lodash/fp/find');
+const includes = require('lodash/fp/includes');
 const callsites = require('callsites');
 
 const firewall = (function () {
-    const proxiedObjs = new WeakSet();
-
     function throwIfCallerNotAuthorized(locations, prop) {
         is.valid(is.array, is.string, arguments);
         const caller = find((c) => !includes('firewall-js/firewall.js')(c.getFileName()))(callsites());
@@ -21,16 +19,8 @@ const firewall = (function () {
         }
     }
 
-    // Credit for recursive set: https://stackoverflow.com/a/40164194
     function createProxiedObject(locations, objToProxy) {
         is.valid(is.array, is.object, arguments);
-        // Recursively ensure object is deeply proxied
-        for (let i in objToProxy) {
-            let subObj = objToProxy[i];
-            if (subObj !== null && typeof subObj === 'object' && !proxiedObjs.has(subObj)) {
-                objToProxy[i] = createProxiedObject(subObj);
-            }
-        }
         let proxied = new Proxy(objToProxy, {
             construct(target, args) {
                 throwIfCallerNotAuthorized(locations, 'creating a new object');
@@ -42,17 +32,9 @@ const firewall = (function () {
             },
             set: function (target, prop, value) {
                 throwIfCallerNotAuthorized(locations, prop);
-
-                // Proxy nested objects
-                if (value !== null && typeof value === 'object' && !proxiedObjs.has(value)) {
-                    value = createProxiedObject(value);
-                }
-                target[prop.toString()] = value;
-
                 return Reflect.set(...arguments);
             },
         });
-        proxiedObjs.add(proxied);
         return proxied;
     }
 

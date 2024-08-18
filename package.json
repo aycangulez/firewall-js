@@ -4,13 +4,18 @@
     "description": "",
     "main": "firewall.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "mocha"
     },
     "author": "Aycan Gulez",
+    "homepage": "https://github.com/aycangulez/firewall-js",
     "license": "MIT",
     "dependencies": {
         "callsites": "^3.1.0",
         "fn-arg-validator": "^1.1.2",
         "lodash": "^4.17.21"
+    },
+    "devDependencies": {
+        "chai": "^4.5.0",
+        "mocha": "^10.7.3"
     }
 }
