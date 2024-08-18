@@ -1,7 +1,7 @@
 const chai = require('chai');
 const should = chai.should();
 const firewall = require('../firewall');
-const { testService, UserService } = require('./service');
+const { testService, UserService, square } = require('./service');
 
 describe('firewall-js', function () {
     it('should access object property', function () {
@@ -19,11 +19,26 @@ describe('firewall-js', function () {
         const fwService = firewall.allow(['test'], testService);
         delete fwService.prop2;
         fwService.should.not.include({ prop2: 'world' });
+        fwService.prop2 = 'world';
     });
 
     it('should access object method', function () {
         const fwService = firewall.allow(['test'], testService);
         fwService.increment(1).should.equal(2);
+    });
+
+    it('should access own keys', function () {
+        const fwService = firewall.allow(['test'], testService);
+        const keys = [];
+        for (let k in fwService) {
+            keys.push(k);
+        }
+        keys.should.include('prop1', 'prop2', 'prop3', 'increments');
+    });
+
+    it('should call a function', function () {
+        var fwFunc = firewall.allow(['test'], square);
+        fwFunc(5).should.equal(25);
     });
 
     it('should create a new object', function () {
@@ -81,13 +96,33 @@ describe('firewall-js', function () {
         }
     });
 
+    it('should not access own keys', function () {
+        const fwService = firewall.allow(['some-dir'], testService);
+        try {
+            for (let k in fwService) {
+            }
+            should.fail();
+        } catch (e) {
+            e.message.should.include('Access denied to observe own keys');
+        }
+    });
+
+    it('should not call a function', function () {
+        const fwFunc = firewall.allow(['some-dir'], square);
+        try {
+            fwFunc();
+        } catch (e) {
+            e.message.should.include('Access denied to calling function');
+        }
+    });
+
     it('should not create a new object', function () {
         const fwService = firewall.allow(['some-dir'], UserService);
         try {
             new fwService();
             should.fail();
         } catch (e) {
-            e.message.should.include('Access denied to creating a new object');
+            e.message.should.include('Access denied to creating new object');
         }
     });
 });

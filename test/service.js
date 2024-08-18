@@ -12,4 +12,12 @@ const UserService = function () {
     };
 };
 
-module.exports = { testService, UserService };
+function square(x) {
+    return x * x;
+}
+
+module.exports = {
+    testService,
+    UserService,
+    square,
+};

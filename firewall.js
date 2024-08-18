@@ -26,8 +26,12 @@ const firewall = (function () {
     function createProxiedObject(locations, objToProxy) {
         is.valid(is.array, is.object, arguments);
         let proxied = new Proxy(objToProxy, {
+            apply: function (target, thisArg, argumentsList) {
+                throwIfCallerNotAuthorized(locations, 'calling function');
+                return Reflect.apply(...arguments);
+            },
             construct(target, args) {
-                throwIfCallerNotAuthorized(locations, 'creating a new object');
+                throwIfCallerNotAuthorized(locations, 'creating new object');
                 return Reflect.construct(...arguments);
             },
             deleteProperty(target, prop) {
@@ -37,6 +41,14 @@ const firewall = (function () {
             get: function (target, prop, receiver) {
                 throwIfCallerNotAuthorized(locations, prop);
                 return Reflect.get(...arguments);
+            },
+            has: function (target, prop) {
+                throwIfCallerNotAuthorized(locations, prop);
+                return Reflect.has(...arguments);
+            },
+            ownKeys: function (target) {
+                throwIfCallerNotAuthorized(locations, 'observe own keys');
+                return Reflect.ownKeys(...arguments);
             },
             set: function (target, prop, value) {
                 throwIfCallerNotAuthorized(locations, prop);
