@@ -1,20 +1,24 @@
 const is = require('fn-arg-validator');
 const find = require('lodash/fp/find');
 const includes = require('lodash/fp/includes');
+const isSymbol = require('lodash/fp/isSymbol');
 const callsites = require('callsites');
+
+is.config.throw = true;
 
 const firewall = (function () {
     function throwIfCallerNotAuthorized(locations, prop) {
-        is.valid(is.array, is.string, arguments);
+        is.valid(is.array, is.oneOf(is.maybeString, isSymbol), arguments);
         const caller = find((c) => !includes('firewall-js/firewall.js')(c.getFileName()))(callsites());
         const callerFileName = caller ? caller.getFileName() : '';
         if (
+            callerFileName &&
             !find((location) => {
                 const fullPath = (process.env.PWD + '/' + location).replace(/\/+/g, '/');
-                return includes(fullPath)(callerFileName);
+                return includes(fullPath)(callerFileName) || includes('node_modules')(callerFileName);
             })(locations)
         ) {
-            const err = `Access denied to ${prop} from ${callerFileName}:${caller.getLineNumber()}:${caller.getColumnNumber()}`;
+            const err = `Access denied to ${prop.toString()} from ${callerFileName}:${caller.getLineNumber()}:${caller.getColumnNumber()}`;
             throw new Error(err);
         }
     }
@@ -25,6 +29,10 @@ const firewall = (function () {
             construct(target, args) {
                 throwIfCallerNotAuthorized(locations, 'creating a new object');
                 return Reflect.construct(...arguments);
+            },
+            deleteProperty(target, prop) {
+                throwIfCallerNotAuthorized(locations, 'deleting property');
+                return Reflect.deleteProperty(...arguments);
             },
             get: function (target, prop, receiver) {
                 throwIfCallerNotAuthorized(locations, prop);

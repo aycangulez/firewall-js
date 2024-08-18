@@ -15,6 +15,12 @@ describe('firewall-js', function () {
         fwService.prop2.should.equal('there');
     });
 
+    it('should delete object property', function () {
+        const fwService = firewall.allow(['test'], testService);
+        delete fwService.prop2;
+        fwService.should.not.include({ prop2: 'world' });
+    });
+
     it('should access object method', function () {
         const fwService = firewall.allow(['test'], testService);
         fwService.increment(1).should.equal(2);
@@ -29,9 +35,7 @@ describe('firewall-js', function () {
         const fwService = firewall.allow(['some-dir'], testService);
         try {
             fwService.prop1;
-            try {
-                should.fail();
-            } catch (e) {}
+            should.fail();
         } catch (e) {
             e.message.should.include('Access denied to prop1');
         }
@@ -41,9 +45,7 @@ describe('firewall-js', function () {
         const fwService = firewall.allow(['some-dir'], testService);
         try {
             fwService.prop3.subProp1;
-            try {
-                should.fail();
-            } catch (e) {}
+            should.fail();
         } catch (e) {
             e.message.should.include('Access denied to prop3');
         }
@@ -53,11 +55,19 @@ describe('firewall-js', function () {
         const fwService = firewall.allow(['some-dir'], testService);
         try {
             fwService.prop2 = 'there';
-            try {
-                should.fail();
-            } catch (e) {}
+            should.fail();
         } catch (e) {
             e.message.should.include('Access denied to prop2');
+        }
+    });
+
+    it('should not delete object property', function () {
+        const fwService = firewall.allow(['some-dir'], testService);
+        try {
+            delete fwService.prop2;
+            should.fail();
+        } catch (e) {
+            e.message.should.include('Access denied to deleting property');
         }
     });
 
@@ -65,9 +75,7 @@ describe('firewall-js', function () {
         const fwService = firewall.allow(['some-dir'], testService);
         try {
             fwService.increment(1);
-            try {
-                should.fail();
-            } catch (e) {}
+            should.fail();
         } catch (e) {
             e.message.should.include('Access denied to increment');
         }
@@ -77,9 +85,7 @@ describe('firewall-js', function () {
         const fwService = firewall.allow(['some-dir'], UserService);
         try {
             new fwService();
-            try {
-                should.fail();
-            } catch (e) {}
+            should.fail();
         } catch (e) {
             e.message.should.include('Access denied to creating a new object');
         }
