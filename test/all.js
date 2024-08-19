@@ -29,6 +29,17 @@ describe('firewall-js', function () {
         Object.getOwnPropertyDescriptor(fwService, 'prop1').value.should.equal('hello');
     });
 
+    it('should get prototype', function () {
+        const fwService = firewall.allow(['test'], testService);
+        (fwService instanceof Object).should.equal(true);
+    });
+
+    it('should set prototype', function () {
+        const fwService = firewall.allow(['test'], testService);
+        Object.setPrototypeOf(fwService, {});
+        (fwService instanceof Object).should.equal(true);
+    });
+
     it('should delete object property', function () {
         const fwService = firewall.allow(['test'], testService);
         delete fwService.prop2;
@@ -106,8 +117,29 @@ describe('firewall-js', function () {
         const fwService = firewall.allow(['some-dir'], testService);
         try {
             Object.getOwnPropertyDescriptor(fwService, 'prop1').value;
+            should.fail();
         } catch (e) {
             e.message.should.include('Access denied for prop1');
+        }
+    });
+
+    it('should not get prototype', function () {
+        const fwService = firewall.allow(['some-dir'], testService);
+        try {
+            fwService instanceof Object;
+            should.fail();
+        } catch (e) {
+            e.message.should.include('Access denied for getting prototype');
+        }
+    });
+
+    it('should not set prototype', function () {
+        const fwService = firewall.allow(['some-dir'], testService);
+        try {
+            Object.setPrototypeOf(fwService, {});
+            should.fail();
+        } catch (e) {
+            e.message.should.include('Access denied for setting prototype');
         }
     });
 

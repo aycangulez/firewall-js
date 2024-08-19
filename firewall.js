@@ -53,6 +53,10 @@ const firewall = (function () {
                 throwIfCallerNotAuthorized(locations, prop);
                 return Reflect.getOwnPropertyDescriptor(...arguments);
             },
+            getPrototypeOf(target) {
+                throwIfCallerNotAuthorized(locations, 'getting prototype');
+                return Reflect.getPrototypeOf(...arguments);
+            },
             has: function (target, prop) {
                 throwIfCallerNotAuthorized(locations, prop);
                 return Reflect.has(...arguments);
@@ -64,6 +68,10 @@ const firewall = (function () {
             set: function (target, prop, value) {
                 throwIfCallerNotAuthorized(locations, prop);
                 return Reflect.set(...arguments);
+            },
+            setPrototypeOf(target, prototype) {
+                throwIfCallerNotAuthorized(locations, 'setting prototype');
+                return Reflect.setPrototypeOf(...arguments);
             },
         });
         return proxied;
