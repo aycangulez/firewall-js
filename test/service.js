@@ -12,6 +12,8 @@ const UserService = function () {
     };
 };
 
+const extensibilityTest = {};
+
 function square(x) {
     return x * x;
 }
@@ -19,5 +21,6 @@ function square(x) {
 module.exports = {
     testService,
     UserService,
+    extensibilityTest,
     square,
 };

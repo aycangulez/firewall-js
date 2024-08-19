@@ -61,9 +61,17 @@ const firewall = (function () {
                 throwIfCallerNotAuthorized(locations, prop);
                 return Reflect.has(...arguments);
             },
+            isExtensible(target) {
+                throwIfCallerNotAuthorized(locations, 'checking extensibility');
+                return Reflect.isExtensible(...arguments);
+            },
             ownKeys: function (target) {
                 throwIfCallerNotAuthorized(locations, 'observing own keys');
                 return Reflect.ownKeys(...arguments);
+            },
+            preventExtensions(target) {
+                throwIfCallerNotAuthorized(locations, 'preventing extensions');
+                return Reflect.preventExtensions(...arguments);
             },
             set: function (target, prop, value) {
                 throwIfCallerNotAuthorized(locations, prop);
