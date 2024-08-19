@@ -15,6 +15,20 @@ describe('firewall-js', function () {
         fwService.prop2.should.equal('there');
     });
 
+    it('should define object property', function () {
+        const fwService = firewall.allow(['test'], testService);
+        Object.defineProperty(fwService, 'prop4', {
+            value: 42,
+        });
+        fwService.prop4.should.equal(42);
+        delete fwService.prop4;
+    });
+
+    it('should get own property descriptor', function () {
+        const fwService = firewall.allow(['test'], testService);
+        Object.getOwnPropertyDescriptor(fwService, 'prop1').value.should.equal('hello');
+    });
+
     it('should delete object property', function () {
         const fwService = firewall.allow(['test'], testService);
         delete fwService.prop2;
@@ -73,6 +87,27 @@ describe('firewall-js', function () {
             should.fail();
         } catch (e) {
             e.message.should.include('Access denied for prop2');
+        }
+    });
+
+    it('should not define object property', function () {
+        const fwService = firewall.allow(['some-dir'], testService);
+        try {
+            Object.defineProperty(fwService, 'prop4', {
+                value: 42,
+            });
+            should.fail();
+        } catch (e) {
+            e.message.should.include('Access denied for prop4');
+        }
+    });
+
+    it('should not get own property descriptor', function () {
+        const fwService = firewall.allow(['some-dir'], testService);
+        try {
+            Object.getOwnPropertyDescriptor(fwService, 'prop1').value;
+        } catch (e) {
+            e.message.should.include('Access denied for prop1');
         }
     });
 

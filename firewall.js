@@ -9,8 +9,11 @@ is.config.throw = true;
 const firewall = (function () {
     function throwIfCallerNotAuthorized(locations, prop) {
         is.valid(is.array, is.oneOf(is.maybeString, isSymbol), arguments);
-        const caller = find((c) => !includes('firewall-js/firewall.js')(c.getFileName()))(callsites());
+        const caller = find((c) => c.getFileName() && !includes('firewall-js/firewall.js')(c.getFileName()))(
+            callsites()
+        );
         const callerFileName = caller ? caller.getFileName() : '';
+
         if (
             callerFileName &&
             !find((location) => {
@@ -34,6 +37,10 @@ const firewall = (function () {
                 throwIfCallerNotAuthorized(locations, 'creating new object');
                 return Reflect.construct(...arguments);
             },
+            defineProperty(target, prop, descriptor) {
+                throwIfCallerNotAuthorized(locations, prop);
+                return Reflect.defineProperty(...arguments);
+            },
             deleteProperty(target, prop) {
                 throwIfCallerNotAuthorized(locations, 'deleting property');
                 return Reflect.deleteProperty(...arguments);
@@ -41,6 +48,10 @@ const firewall = (function () {
             get: function (target, prop, receiver) {
                 throwIfCallerNotAuthorized(locations, prop);
                 return Reflect.get(...arguments);
+            },
+            getOwnPropertyDescriptor(target, prop) {
+                throwIfCallerNotAuthorized(locations, prop);
+                return Reflect.getOwnPropertyDescriptor(...arguments);
             },
             has: function (target, prop) {
                 throwIfCallerNotAuthorized(locations, prop);
