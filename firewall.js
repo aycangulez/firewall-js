@@ -28,7 +28,7 @@ const firewall = (function () {
 
     function createProxiedObject(locations, objToProxy) {
         is.valid(is.array, is.object, arguments);
-        let proxied = new Proxy(objToProxy, {
+        const proxied = new Proxy(objToProxy, {
             apply: function (target, thisArg, argumentsList) {
                 throwIfCallerNotAuthorized(locations, 'calling function');
                 return Reflect.apply(...arguments);

@@ -1,7 +1,7 @@
 {
     "name": "firewall-js",
     "version": "0.1.0",
-    "description": "",
+    "description": "Safeguard your codebase with seamless access control based on directory structure.",
     "main": "firewall.js",
     "scripts": {
         "test": "mocha"
