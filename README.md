@@ -19,9 +19,16 @@ By using JavaScript proxies, firewall-js allows only the files specified in `all
 
 As a quick example, take a simple backend application with three layers: **routes &gt; controllers &gt; services**. Each layer has its own directory, and each file in a directory houses a module. The directory listing should look something like this:
 
+```text
+> controllers
+> routes
+v services
+   auth.js
+   log.js
+   user.js
+```
 
-
-If you want all the controller modules and service modules to have access to a particular service module, it can be done with a single line:
+If you want all the controller and service modules to have access to a particular service module, it can be done with a single line:
 
 ```js
 // services/user.js
