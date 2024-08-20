@@ -10,7 +10,7 @@ npm install --save firewall-js
 
 ```js
 const firewall = require('firewall-js');
-const proxiedObj = firewall.allow(allowedPathsArray, targetObj)
+const proxiedObj = firewall.allow(allowedPathsArray, targetObj);
 ```
 
 By using JavaScript proxies, firewall-js allows only the files specified in `allowedPathsArray` to access any object (or function).
