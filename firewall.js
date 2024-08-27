@@ -17,7 +17,10 @@ const firewall = (function () {
         if (
             callerFileName &&
             !find((location) => {
-                const fullPath = (process.env.PWD + '/' + location).replace(/\/+/g, '/');
+                if (!includes('.')(location)) {
+                    location += '/';
+                }
+                const fullPath = (process.env.PWD + '/' + location).replace(/\/{2,}/g, '/');
                 return includes(fullPath)(callerFileName) || includes('node_modules')(callerFileName);
             })(locations)
         ) {

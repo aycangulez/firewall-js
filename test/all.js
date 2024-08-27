@@ -9,7 +9,12 @@ describe('should', function () {
         fwService.prop1.should.equal('hello');
     });
 
-    it('access to nested bject property', function () {
+    it('access to object property from file only', function () {
+        const fwService = firewall.allow(['test/all.js'], testService);
+        fwService.prop1.should.equal('hello');
+    });
+
+    it('access to nested object property', function () {
         const fwService = firewall.allow(['test'], testService);
         fwService.prop3.subProp1.should.equal('deep down');
     });
@@ -91,6 +96,16 @@ describe('should', function () {
 describe('should not', function () {
     it('access to object property', function () {
         const fwService = firewall.allow(['some-dir'], testService);
+        try {
+            fwService.prop1;
+            should.fail();
+        } catch (e) {
+            e.message.should.include('Access denied for prop1');
+        }
+    });
+
+    it('access to object property from file', function () {
+        const fwService = firewall.allow(['test/all'], testService);
         try {
             fwService.prop1;
             should.fail();
