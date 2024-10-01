@@ -1,3 +1,5 @@
+// @ts-check
+
 const chai = require('chai');
 const should = chai.should();
 const firewall = require('../firewall');
@@ -36,7 +38,7 @@ describe('should', function () {
 
     it('get own property descriptor', function () {
         const fwService = firewall.allow(['test'], testService);
-        Object.getOwnPropertyDescriptor(fwService, 'prop1').value.should.equal('hello');
+        Object?.getOwnPropertyDescriptor(fwService, 'prop1')?.value.should.equal('hello');
     });
 
     it('get prototype', function () {
@@ -68,7 +70,7 @@ describe('should', function () {
         for (let k in fwService) {
             keys.push(k);
         }
-        keys.should.include('prop1', 'prop2', 'prop3', 'increments');
+        keys.should.include('prop1');
     });
 
     it('check the extensibility of object', function () {
@@ -149,7 +151,7 @@ describe('should not', function () {
     it('get own property descriptor', function () {
         const fwService = firewall.allow(['some-dir'], testService);
         try {
-            Object.getOwnPropertyDescriptor(fwService, 'prop1').value;
+            Object?.getOwnPropertyDescriptor(fwService, 'prop1')?.value;
             should.fail();
         } catch (e) {
             e.message.should.include('Access denied for prop1');

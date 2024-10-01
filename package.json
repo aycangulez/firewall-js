@@ -1,10 +1,11 @@
 {
     "name": "firewall-js",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Safeguard your codebase with seamless access control based on directory structure.",
     "main": "firewall.js",
     "scripts": {
-        "test": "mocha"
+        "test": "mocha",
+        "jsdoc": "jsdoc"
     },
     "author": "Aycan Gulez",
     "homepage": "https://github.com/aycangulez/firewall-js",
@@ -15,7 +16,11 @@
         "lodash": "^4.17.21"
     },
     "devDependencies": {
+        "@types/chai": "^5.0.0",
+        "@types/mocha": "^10.0.8",
+        "@types/node": "^22.7.4",
         "chai": "^4.5.0",
+        "jsdoc": "^4.0.3",
         "mocha": "^10.7.3"
     }
 }
